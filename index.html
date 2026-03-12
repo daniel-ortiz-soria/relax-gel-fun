@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pausa IT - Lafuente Grupo Empresarial</title>
+    <style>
+        :root {
+            --primary: #1a3a5a; 
+            --green-it: #2d5a27;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #bg-image {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.6);
+            z-index: -1;
+            transition: background-image 1.5s ease-in-out; 
+        }
+
+        .main-card {
+            background: rgba(255, 255, 255, 0.45);
+            backdrop-filter: blur(10px);
+            padding: 30px 40px;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            max-width: 350px;
+            width: 90%;
+        }
+
+        /* Estilo para el nuevo logo con transparencia */
+        .company-logo {
+            width: 280px;
+            margin-bottom: 20px;
+            mix-blend-mode: multiply; 
+        }
+
+        .btn-relax {
+            background: var(--green-it);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s, background 0.3s;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-relax:hover {
+            transform: scale(1.05);
+            background: #1e3d1a;
+        }
+
+        #timer-display {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: var(--green-it);
+            display: none;
+            margin: 20px 0;
+        }
+
+        .tech-quote {
+            font-size: 0.95rem;
+            color: #444;
+            font-style: italic;
+            margin-top: 20px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            padding-top: 15px;
+            line-height: 1.4;
+        }
+
+        #message-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--green-it);
+            color: white;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 100;
+            text-align: center;
+            padding: 40px;
+        }
+        #playlist-select a {color:#002e75;}
+
+        /**** XS ***(portrait phones, less than 576px)*/
+        @media (max-width: 575.98px) {
+             .main-card {
+                background: rgba(255, 255, 255, 0.45);
+                backdrop-filter: blur(10px);
+                padding: 30px 40px;
+                border-radius: 30px;
+                text-align: center;
+                box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+                max-width: 350px;
+                width: 65%;
+            }
+            h1 { font-size: 28px; }
+            .company-logo {margin-left: -20px; margin-bottom: 0;}
+        }
+        /**** SM ***(landscape phones, 576px and 767) */
+        @media (min-width: 576px) and (max-width: 767.98px) {
+             .main-card {
+                background: rgba(255, 255, 255, 0.45);
+                backdrop-filter: blur(10px);
+                padding: 30px 40px;
+                border-radius: 30px;
+                text-align: center;
+                box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+                max-width: 350px;
+                width: 65%;
+            }
+            h1 { font-size: 28px; }
+            .company-logo {margin-left: -20px; margin-bottom: 0;}
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bg-image"></div>
+
+    <div class="main-card" id="interface">
+        <img src="gel.png" alt="Lafuente Logo" class="company-logo">
+        
+        <h1>Pausa de Enfoque</h1>
+        <p>Regálate estos 2 minutos de calma.</p>
+        
+        <button class="btn-relax" id="btn-main" onclick="iniciarRelajacion()">REINICIAR MENTE</button>
+        
+        <div id="timer-display">02:00</div>
+
+        <div id="playlist-select" style="display:none; margin-top:22px;">
+            <span style="font-weight:bold;">Playlist:</span>
+            <a href="#" onclick="cambiarPlaylist('default')">Default</a> |
+            <a href="#" onclick="cambiarPlaylist('daniel')">Daniel</a> |
+            <a href="#" onclick="cambiarPlaylist('cesar')">Cesar</a>
+        </div>
+
+        <div class="tech-quote" id="tech-msg">
+            "En Tecnología también reiniciamos la mente, no solo los sistemas"
+        </div>
+    </div>
+
+    <div id="message-overlay">
+        <h1 id="frase-motivadora" style="font-size: 2.5rem; margin-bottom: 20px; line-height: 1.2;"></h1>
+        <p style="font-size: 1.3rem; opacity: 0.9;">Sistema refrescado. Es momento de continuar.</p>
+    </div>
+
+    <audio id="audio-player"></audio>
+
+    <script>
+        // Selección de Música Instrumental Relajante
+        const cancionesInstrumentales = [
+			"morconi2min.mp3",
+            "mr-1.mp3",
+            "mr-2.mp3",
+            "mr-3.mp3"
+        ];
+        const cancionesInstrumentalesDaniel = [
+            "Los_autenticos_Decadentes_-_la_Guitarra.mp3",
+        ];
+        const cancionesInstrumentalesCesar = [
+            "nothing-else-matters-metallica.mp3",
+        ];
+        let playlistActual = cancionesInstrumentales;
+
+        const imagenes = [
+            "bg1.gif",
+            "bg2.gif",
+            "bg3.gif",
+            "bg4.jpg",
+            "bg5.jpg",
+            "bg6.jpg",
+            "bg7.jpg",
+            "bg8.jpg",
+        ];
+
+        const frasesFinales = [
+            "¡TRABAJA CON ENERGÍA!",
+            "¡ERES CAPAZ DE LOGRARLO TODO!",
+            "¡MENTE DESPEJADA, ÉXITO ASEGURADO!",
+            "¡VUELVE CON FUERZA A TUS TAREAS!",
+            "¡EL MOMENTO DE BRILLAR ES AHORA!"
+        ];
+
+        let intervaloFondo;
+
+        function cambiarAmbiente() {
+            const bg = document.getElementById('bg-image');
+            const imgIndex = Math.floor(Math.random() * imagenes.length);
+            bg.style.backgroundImage = `url('${imagenes[imgIndex]}?auto=format&fit=crop&w=1350&q=80')`;
+        }
+
+        function iniciarRelajacion() {
+            const btn = document.getElementById('btn-main');
+            const timerDisplay = document.getElementById('timer-display');
+            const audio = document.getElementById('audio-player');
+            const techMsg = document.getElementById('tech-msg');
+            
+            // Música Instrumental Aleatoria
+            //const trackRandom = cancionesInstrumentales[Math.floor(Math.random() * cancionesInstrumentales.length)];
+            const trackRandom = playlistActual[Math.floor(Math.random() * playlistActual.length)];
+            audio.src = trackRandom;
+            audio.load();
+            audio.play();
+
+            cambiarAmbiente();
+            // Cambio de fondo cada 10 segundos
+            intervaloFondo = setInterval(cambiarAmbiente, 6000); 
+
+            btn.style.display = 'none';
+            techMsg.style.display = 'none'; 
+            timerDisplay.style.display = 'block';
+            document.getElementById('playlist-select').style.display = 'block';
+
+            let tiempoRestante = 120; 
+            const intervaloReloj = setInterval(() => {
+                tiempoRestante--;
+                let min = Math.floor(tiempoRestante / 60);
+                let seg = tiempoRestante % 60;
+                timerDisplay.innerText = `${min.toString().padStart(2, '0')}:${seg.toString().padStart(2, '0')}`;
+
+                if (tiempoRestante <= 0) {
+                    clearInterval(intervaloReloj);
+                    clearInterval(intervaloFondo);
+                    finalizar();
+                }
+            }, 1000);
+        }
+
+        function finalizar() {
+            const audio = document.getElementById('audio-player');
+            audio.pause();
+            
+            const textoFrase = frasesFinales[Math.floor(Math.random() * frasesFinales.length)];
+            document.getElementById('frase-motivadora').innerText = textoFrase;
+            
+            document.getElementById('message-overlay').style.display = 'flex';
+        }
+
+        function cambiarPlaylist(tipo){
+            const audio = document.getElementById('audio-player');
+
+            if(tipo === "daniel"){
+                playlistActual = cancionesInstrumentalesDaniel;
+            }
+            else if(tipo === "cesar"){
+                playlistActual = cancionesInstrumentalesCesar;
+            }
+            else{
+                playlistActual = cancionesInstrumentales;
+            }
+
+            // reproducir una canción de la nueva playlist
+            const trackRandom = playlistActual[Math.floor(Math.random() * playlistActual.length)];
+            audio.src = trackRandom;
+            audio.load();
+            audio.play();
+        }
+
+        window.onload = cambiarAmbiente;
+    </script>
+</body>
+</html>
