@@ -19,6 +19,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            background-color: #000000;
         }
 
         #bg-image {
@@ -141,17 +142,19 @@
         <img src="gel.png" alt="Lafuente Logo" class="company-logo">
         
         <h1>Pausa de Enfoque</h1>
-        <p>Regálate estos 2 minutos de calma.</p>
+        <p>Regálate estos 2 minutos de calma :)</p>
         
         <button class="btn-relax" id="btn-main" onclick="iniciarRelajacion()">REINICIAR MENTE</button>
         
-        <div id="timer-display">02:00</div>
+        <div id="timer-display">05:00</div>
 
         <div id="playlist-select" style="display:none; margin-top:22px;">
             <span style="font-weight:bold;">Playlist:</span>
             <a href="#" onclick="cambiarPlaylist('default')">Default</a> |
             <a href="#" onclick="cambiarPlaylist('daniel')">Daniel</a> |
             <a href="#" onclick="cambiarPlaylist('cesar')">Cesar</a>
+            <a href="#" onclick="cambiarPlaylist('manuel')">Cesar</a>
+            <a href="#" onclick="cambiarPlaylist('guido')">Guido</a>
         </div>
 
         <div class="tech-quote" id="tech-msg">
@@ -169,6 +172,7 @@
     <script>
         // Selección de Música Instrumental Relajante
         const cancionesInstrumentales = [
+            "trueno.mp3",
 			"morconi2min.mp3",
             "mr-1.mp3",
             "mr-2.mp3",
@@ -176,9 +180,25 @@
         ];
         const cancionesInstrumentalesDaniel = [
             "Los_autenticos_Decadentes_-_la_Guitarra.mp3",
+            "Levantate Vago.mp3",
+            "The_Drug_In_Me_Is_You_-_Falling_In_Reverse.mp3",
+            "Bee Gees - Stayin Alive.mp3",
         ];
         const cancionesInstrumentalesCesar = [
             "nothing-else-matters-metallica.mp3",
+            "Nickelback - Never Again.mp3",
+            "Nickelback - San Quentin (Official Music Video).mp3",
+            "Rammstein_ Paris - Du Hast (Official Video).mp3",
+        ];
+        const cancionesInstrumentalesManuel = [
+            "CORONA QUE ESTAS HACIENDO.mp3",
+            "CORONA QUE TENGO QUE HACER.mp3",
+            "Lu de la Tower Corona ERROR 403 Official Video.mp3",
+        ];
+        const cancionesInstrumentalesGuido = [
+            "All Star - Smash Mouth.mp3",
+            "DARK ARIA - Danie Green.mp3",
+            "The One Ring Theme.mp3",
         ];
         let playlistActual = cancionesInstrumentales;
 
@@ -224,14 +244,14 @@
 
             cambiarAmbiente();
             // Cambio de fondo cada 10 segundos
-            intervaloFondo = setInterval(cambiarAmbiente, 6000); 
+            intervaloFondo = setInterval(cambiarAmbiente, 7000); 
 
             btn.style.display = 'none';
             techMsg.style.display = 'none'; 
             timerDisplay.style.display = 'block';
             document.getElementById('playlist-select').style.display = 'block';
 
-            let tiempoRestante = 120; 
+            let tiempoRestante = 300; 
             const intervaloReloj = setInterval(() => {
                 tiempoRestante--;
                 let min = Math.floor(tiempoRestante / 60);
@@ -264,6 +284,12 @@
             }
             else if(tipo === "cesar"){
                 playlistActual = cancionesInstrumentalesCesar;
+            }
+            else if(tipo === "manuel"){
+                playlistActual = cancionesInstrumentalesManuel;
+            }
+            else if(tipo === "guido"){
+                playlistActual = cancionesInstrumentalesGuido;
             }
             else{
                 playlistActual = cancionesInstrumentales;
