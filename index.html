@@ -248,11 +248,7 @@
             const techMsg = document.getElementById('tech-msg');
             
             // Música Instrumental Aleatoria
-            //const trackRandom = cancionesInstrumentales[Math.floor(Math.random() * cancionesInstrumentales.length)];
-            const trackRandom = playlistActual[Math.floor(Math.random() * playlistActual.length)];
-            audio.src = trackRandom;
-            audio.load();
-            audio.play();
+            reproducirCancionAleatoria();
 
             cambiarAmbiente();
             // Cambio de fondo cada 10 segundos
@@ -311,11 +307,20 @@
             }
 
             // reproducir una canción de la nueva playlist
+            reproducirCancionAleatoria();
+        }
+
+        function reproducirCancionAleatoria(){
+            const audio = document.getElementById('audio-player');
             const trackRandom = playlistActual[Math.floor(Math.random() * playlistActual.length)];
             audio.src = trackRandom;
             audio.load();
             audio.play();
         }
+
+        document.getElementById('audio-player').addEventListener('ended', function(){
+            reproducirCancionAleatoria();
+        });
 
         window.onload = cambiarAmbiente;
     </script>
